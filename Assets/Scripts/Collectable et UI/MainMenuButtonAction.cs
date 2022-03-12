@@ -38,4 +38,16 @@ public class MainMenuButtonAction : MonoBehaviour
     {
         Application.Quit();
     }
+
+    public async void LevelCompleteVerification()
+    {
+        for (int i = 1; i < GameManager.Instance.PlayerData.CompletedLevels.Count; i++)
+        {
+            if (GameManager.Instance.PlayerData.CompletedLevels["Level"+i])
+            {
+                Button btn = GameObject.Find("ButtonNiv"+(i+1)).GetComponent<Button>();
+                btn.interactable = true;
+            }
+        }
+    }
 }

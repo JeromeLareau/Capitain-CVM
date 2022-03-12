@@ -64,10 +64,17 @@ public class PlayerData
     /// </summary>
     public System.Action Gameover;
 
+    private Dictionary<string, bool> _completedLevels = new Dictionary<string, bool>(){
+        {"Level1", false},
+        {"Level2", false},
+        {"Level3", false},
+    };
+
     public int Energie { get { return this._energie; } }
     public int Vie { get { return this._vie; } }
     public int Score { get { return this._score; } }
     public string[] ListeCoffreOuvert { get { return this._chestOpenList.ToArray(); } }
+    public Dictionary<string, bool> CompletedLevels { get { return this._completedLevels; } }
 
     public PlayerData()
     {
@@ -86,7 +93,8 @@ public class PlayerData
     public PlayerData(int vie = 1, int energie = 2, int score = 0,
         float volumeGeneral = 0, float volumeMusique = 0, float volumeEffet = 0,
         System.Action uiPerteEnergie = null, System.Action uiPerteVie = null,
-        System.Action gameOver = null, List<string> ChestList = null)
+        System.Action gameOver = null, List<string> ChestList = null,
+        List<string> CompletedLevels = null)
     {
         this._vie = vie;
         this._energie = energie;
@@ -100,6 +108,11 @@ public class PlayerData
         this._chestOpenList = new List<string>();
         if (ChestList != null)
             this._chestOpenList = ChestList;
+        if (CompletedLevels != null)
+            foreach (string level in CompletedLevels)
+            {
+                this._completedLevels[level] = true;
+            }
     }
 
     /// <summary>
@@ -185,5 +198,15 @@ public class PlayerData
     public bool AvoirOuvertureCoffre(string nom)
     {
         return this._chestOpenList.Contains(nom);
+    }
+
+    public bool CompleteLevel(string levelName)
+    {
+        if (_completedLevels.ContainsKey(levelName))
+        {
+            _completedLevels[levelName] = true;
+            return true;
+        }
+        return false;
     }
 }

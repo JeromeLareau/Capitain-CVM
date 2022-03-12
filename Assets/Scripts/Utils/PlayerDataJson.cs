@@ -33,9 +33,25 @@ public static class PlayerDataJson
                     json += ",";
                 json += newline;
             }
-            json += tab + "]" + newline;
+            json += tab + "]," + newline;
         }
-        else json += "]" + newline;
+        else json += "]," + newline;
+        json += tab + "\"completedLevels\":[";
+        int j = 0;
+        foreach (string key in data.CompletedLevels.Keys)
+        {
+            if (data.CompletedLevels[key]){
+                if (j != 0)
+                {
+                    json += ",";
+                }
+                json += newline + tab + tab + "\"" + key + "\"";
+                j++;
+            }
+        }
+        if (j != 0)
+            json += newline + tab;
+        json += "]" + newline;
         json += "}";
         return json;
     }
@@ -61,6 +77,7 @@ public static class PlayerDataJson
         int vie = 0, energie = 0, score = 0;
         float vlmGeneral = 0, vlmMusique = 0, vlmEffet = 0;
         List<string> chests = new List<string>();
+        List<string> levels = new List<string>();
         string[] lignes = json.Split('\n');
         
         for(int i = 1; i < lignes.Length || lignes[i] != "}"; i++)
@@ -92,21 +109,33 @@ public static class PlayerDataJson
                     vlmEffet = float.Parse(parametre[1].Replace(",", string.Empty).Replace('.', ','));
                     break;
                 case "\"chestOpenList\"":
-                    if (parametre[1] == "[]")
+                    if (parametre[1] == "[],")
                         break;
                     else if (parametre[1] != "[")
                         throw new JSONFormatExpcetion();
-                    while(lignes[++i] != "]")
+                    while(lignes[++i] != "],")
                     {
                         chests.Add(lignes[i]
                             .Replace(",", string.Empty)
                             .Replace("\"", string.Empty));
                     }
                     break;
+                case "\"completedLevels\"":
+                    if (parametre[1] == "[]")
+                        break;
+                    else if (parametre[1] != "[")
+                        throw new JSONFormatExpcetion();
+                    while(lignes[++i] != "]")
+                    {
+                        levels.Add(lignes[i]
+                            .Replace(",", string.Empty)
+                            .Replace("\"", string.Empty));
+                    }
+                    break;      
             }
         }
 
-        return new PlayerData(vie, energie, score, vlmGeneral, vlmMusique, vlmEffet, ChestList: chests);
+        return new PlayerData(vie, energie, score, vlmGeneral, vlmMusique, vlmEffet, ChestList: chests, CompletedLevels: levels);
     }
 }
 
