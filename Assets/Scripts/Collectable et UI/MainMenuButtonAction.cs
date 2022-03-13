@@ -39,7 +39,7 @@ public class MainMenuButtonAction : MonoBehaviour
         Application.Quit();
     }
 
-    public async void LevelCompleteVerification()
+    public void LevelCompleteVerification()
     {
         for (int i = 1; i < GameManager.Instance.PlayerData.CompletedLevels.Count; i++)
         {
