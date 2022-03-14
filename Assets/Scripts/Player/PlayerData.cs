@@ -69,12 +69,18 @@ public class PlayerData
         {"Level2", false},
         {"Level3", false},
     };
+    private Dictionary<string, bool> _collectedGems = new Dictionary<string, bool>(){
+        {"Ruby", false},
+        {"Sapphire", false},
+        {"Emerald", false},
+    };
 
     public int Energie { get { return this._energie; } }
     public int Vie { get { return this._vie; } }
     public int Score { get { return this._score; } }
     public string[] ListeCoffreOuvert { get { return this._chestOpenList.ToArray(); } }
     public Dictionary<string, bool> CompletedLevels { get { return this._completedLevels; } }
+    public Dictionary<string, bool> CollectedGems { get { return this._collectedGems; } }
 
     public PlayerData()
     {
@@ -94,7 +100,7 @@ public class PlayerData
         float volumeGeneral = 0, float volumeMusique = 0, float volumeEffet = 0,
         System.Action uiPerteEnergie = null, System.Action uiPerteVie = null,
         System.Action gameOver = null, List<string> ChestList = null,
-        List<string> CompletedLevels = null)
+        List<string> CompletedLevels = null, List<string> CollectedGems = null)
     {
         this._vie = vie;
         this._energie = energie;
@@ -112,6 +118,11 @@ public class PlayerData
             foreach (string level in CompletedLevels)
             {
                 this._completedLevels[level] = true;
+            }
+        if (CollectedGems != null)
+            foreach (string gem in CollectedGems)
+            {
+                this._collectedGems[gem] = true;
             }
     }
 
@@ -205,6 +216,16 @@ public class PlayerData
         if (_completedLevels.ContainsKey(levelName))
         {
             _completedLevels[levelName] = true;
+            return true;
+        }
+        return false;
+    }
+
+    public bool CollectGem(string gem)
+    {
+        if (_collectedGems.ContainsKey(gem))
+        {
+            _collectedGems[gem] = true;
             return true;
         }
         return false;

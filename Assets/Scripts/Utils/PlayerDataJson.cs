@@ -51,6 +51,22 @@ public static class PlayerDataJson
         }
         if (j != 0)
             json += newline + tab;
+        json += "]," + newline;
+        json += tab + "\"collectedGems\":[";
+        int k = 0;
+        foreach (string key in data.CollectedGems.Keys)
+        {
+            if (data.CollectedGems[key]){
+                if (k != 0)
+                {
+                    json += ",";
+                }
+                json += newline + tab + tab + "\"" + key + "\"";
+                k++;
+            }
+        }
+        if (k != 0)
+            json += newline + tab;
         json += "]" + newline;
         json += "}";
         return json;
@@ -78,6 +94,7 @@ public static class PlayerDataJson
         float vlmGeneral = 0, vlmMusique = 0, vlmEffet = 0;
         List<string> chests = new List<string>();
         List<string> levels = new List<string>();
+        List<string> gems = new List<string>();
         string[] lignes = json.Split('\n');
         
         for(int i = 1; i < lignes.Length || lignes[i] != "}"; i++)
@@ -121,13 +138,25 @@ public static class PlayerDataJson
                     }
                     break;
                 case "\"completedLevels\"":
+                    if (parametre[1] == "[],")
+                        break;
+                    else if (parametre[1] != "[")
+                        throw new JSONFormatExpcetion();
+                    while(lignes[++i] != "],")
+                    {
+                        levels.Add(lignes[i]
+                            .Replace(",", string.Empty)
+                            .Replace("\"", string.Empty));
+                    }
+                    break;      
+                case "\"collectedGems\"":
                     if (parametre[1] == "[]")
                         break;
                     else if (parametre[1] != "[")
                         throw new JSONFormatExpcetion();
                     while(lignes[++i] != "]")
                     {
-                        levels.Add(lignes[i]
+                        gems.Add(lignes[i]
                             .Replace(",", string.Empty)
                             .Replace("\"", string.Empty));
                     }
@@ -135,7 +164,7 @@ public static class PlayerDataJson
             }
         }
 
-        return new PlayerData(vie, energie, score, vlmGeneral, vlmMusique, vlmEffet, ChestList: chests, CompletedLevels: levels);
+        return new PlayerData(vie, energie, score, vlmGeneral, vlmMusique, vlmEffet, ChestList: chests, CompletedLevels: levels, CollectedGems: gems);
     }
 }
 

@@ -50,4 +50,16 @@ public class MainMenuButtonAction : MonoBehaviour
             }
         }
     }
+
+    public void GemCollectedVerification()
+    {
+        foreach (string gem in GameManager.Instance.PlayerData.CollectedGems.Keys)
+        {
+            if (GameManager.Instance.PlayerData.CollectedGems[gem])
+            {
+                SpriteRenderer sr = GameObject.Find(gem).GetComponent<SpriteRenderer>();
+                sr.color = Color.white;
+            }
+        }
+    }
 }
